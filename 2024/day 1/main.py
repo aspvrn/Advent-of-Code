@@ -1,5 +1,5 @@
 # read input file
-with open("day 1/input.txt", 'r') as f:
+with open("2024/day 1/input.txt", 'r') as f:
     inp = f.read()
 
 
