@@ -1,29 +1,42 @@
+import numpy as np
+
 # read input file
 with open("2024/day 2/input.txt", 'r') as f:
     inp = f.read()
 
-# part 1
-def part1():
-    reports = []
-    unsafe = []
+reports = np.array([[*map(int, line.split(" "))] for line in inp.splitlines()], object)
 
-    for line in inp.split("\n"):
-        report = [*map(int, line.split(' '))]
-        reports.append(report)
 
-        sreport = sorted(report)
 
-        if report == sreport or report == [*reversed(sreport)]:
-            for i in range(len(report)-1):
-                diff = abs(report[i] - report[i+1])
+# part 1 (refactored)
 
-                if diff <= 0 or diff >= 4:
-                    unsafe.append(report)
-                    break
-        else:
-            unsafe.append(report)
+def safeCheck(report):
+    if len(report) <= 1:
+        return 1
     
-    for i in unsafe:
-        reports.remove(i)
+    diffs = np.diff(report)
+    isGradual = (np.all(diffs >= 1) and np.all(diffs <= 3)) or (np.all(diffs <= -1) and np.all(diffs >= -3))
 
-    print(len(reports))
+    if isGradual:
+        return 1
+    else:
+        return 0
+
+
+
+# part 2 (with numpy)
+
+def safteyDampener(report):
+    if safeCheck(report) == 0:
+        for level in range(len(report)):
+            if safeCheck(np.delete(report, [level])):
+                return 1
+            
+        return 0
+    
+    return safeCheck(report)
+
+
+
+print(np.sum([safeCheck(report) for report in reports]))
+print(np.sum([safteyDampener(report) for report in reports]))
